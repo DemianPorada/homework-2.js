@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Debounce: Слайдер + Переміщення об'єкта</title>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <style>
+
+    /* ======== Завдання 1: Слайдер ========== */
+    .slider {
+      max-width: 500px;
+      margin: 50px auto;
+      text-align: center;
+      border: 1px solid #ccc;
+      padding: 20px;
+    }
+
+    .slider__input {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .slider__image-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slider__image {
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+
+    /* ======== Завдання 2: Переміщення обʼєкта ========== */
+    #box {
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+      z-index: 1000;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ======== Завдання 1: Слайдер ========== -->
+  <div class="slider">
+    <h2>Завдання 1: Зміна розміру зображення</h2>
+    <input type="range" min="50" max="500" value="300" class="slider__input" />
+    <div class="slider__image-wrapper">
+      <img src="https://via.placeholder.com/300x300" class="slider__image" />
+    </div>
+  </div>
+
+  <!-- ======== Завдання 2: Переміщення обʼєкта за мишею ========== -->
+  <h2 style="text-align: center; margin-top: 100px;">Завдання 2: Переміщення обʼєкта за мишею</h2>
+  <div id="box"></div>
+
+
+  <script>
+
+    // ======== Завдання 1: Слайдер з debounce ==========
+
+    const sliderInput = document.querySelector('.slider__input');
+    const image = document.querySelector('.slider__image');
+
+    const resizeImage = () => {
+      const size = sliderInput.value;
+      image.style.width = `${size}px`;
+      image.style.height = `${size}px`;
+    };
+
+    const debouncedResize = _.debounce(resizeImage, 150);
+
+    sliderInput.addEventListener('input', debouncedResize);
+
+    resizeImage(); // Встановлення початкового розміру
+
+
+    // ======== Завдання 2: Переміщення обʼєкта з debounce ==========
+
+    const box = document.getElementById('box');
+
+    const moveBox = (event) => {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      // Центруємо обʼєкт під курсором, враховуючи половину розміру
+      box.style.transform = translate(`${x - box.offsetWidth / 2}px, ${y - box.offsetHeight / 2}px`);
+    };
+
+    const debouncedMove = _.debounce(moveBox, 100);
+
+    document.addEventListener('mousemove', debouncedMove);
+
+  </script>
+
+</body>
+</html>
